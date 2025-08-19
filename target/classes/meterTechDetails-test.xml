@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd 
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <munit:config name="bg-premise-ensek-sys-api-apikit-test.xml" />
+      <http:request-config name="HTTPS_Request_Configuration_MTD">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	<munit:test name="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config-200-application\json-FlowTest" description="Verifying functionality of [get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config-200-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock meterTech Endpoint" doc:id="7ae1fd11-2bc8-489a-b526-59facbc65f2f" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Meterpoint API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://metertechnicaldetails/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+		<munit:execution>
+            <http:request config-ref="HTTPS_Request_Configuration_MTD" method="GET" path="/19112/meterpoints">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+				<http:query-params ><![CDATA[#[output application/java
+---
+{
+	includeHistory : true
+}]]]></http:query-params>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 200" />
+            <munit-tools:assert-that expression="#[output application/json ---payload]" is="#[MunitTools::equalTo(readUrl('classpath://metertechnicaldetails/response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config-404-application\json-FlowTest" description="Verifying functionality of [get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock MeterTech endpoint" doc:id="52a53f91-18c5-4c2d-b9c7-a2bc788b7126" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Meterpoint API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="3aa05eb9-6e00-432c-8120-ed7b83b901e0" config-ref="HTTPS_Request_Configuration_MTD" path="/19112/meterpoints" correlationId="8c47af90-c23b-11ec-a190-000c2997d49a" >
+				<http:headers ><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="404" />
+				</http:response-validator>
+			</http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+            <munit-tools:assert-that expression="#[output application/json ---payload]" is="#[MunitTools::equalTo(readUrl('classpath://metertechnicaldetails/404-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+        <munit:test name="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config-405-application\json-FlowTest" description="Verifying functionality of [get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config-405-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock MeterTech endpoint" doc:id="29571f68-b780-4479-872e-b47be40b71a8" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Meterpoint API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+            <http:request config-ref="HTTPS_Request_Configuration_MTD" method="POST" path="/19112/meterpoints" correlationId="8c47af90-c23b-11ec-a190-000c2997d49a">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="405" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 405" />
+            <munit-tools:assert-that expression="#[output application/json ---payload]" is="#[MunitTools::equalTo(readUrl('classpath://metertechnicaldetails/405-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+</mule>

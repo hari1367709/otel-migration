@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="sub-flow-meterpoints" doc:id="b62cf9a3-a744-44f1-a4d5-978cee872f0d" >
+		<ee:transform doc:name="Set Required Vars" doc:id="8b3d262f-6850-42ab-8c09-bd121a54a46c" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable resource="dwl/meterpoint/set-ensek-dynamic-uri.dwl" variableName="finaluri" />
+				<ee:set-variable variableName="meterpointnumber" ><![CDATA[attributes.uriParams.'meterpointnumber']]></ee:set-variable>
+			
+</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Call Common SigV4 Auth Code Sub Flow" doc:id="32d5ec84-b136-46f3-9676-ff6354c13d29" name="utility-sub-flow-ensek-aws-sigv4-auth-code"/>
+		<http:request method="GET" doc:name="Call Ensek Meterpoint API" doc:id="ca2b21c2-27d9-4503-884a-6132eae4b012" path="#[vars.finaluri]" config-ref="HTTPRequestConfig-Ensek" sendCorrelationId="NEVER">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-Amz-Date" : vars.xAmzDate ++ "",
+	"Authorization" : vars.authStringSigv4,
+	"Host" : p('ensek.endpoint.host'),
+	"Content-Type" : "application/json",
+	"traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+	"tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+}]]]></http:headers>
+		
+		
+		</http:request>
+		
+		<ee:transform doc:name="Prepare Response" doc:id="2fdec842-e15c-4545-87c1-29177f76fde3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"meterPointNumber":vars.meterpointnumber,
+	"meterPointLiveStatus": payload.exists
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	
+</sub-flow>
+	
+	
+	</mule>

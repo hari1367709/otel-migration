@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "code": "ElectricityMeterReadFrequency",
+        "description": "Electricity Meter Read Frequency",
+        "consentItems": [
+            {
+                "id": 1,
+                "code": "HalfHourly",
+                "description": "Half Hourly",
+                "consentDate": null,
+                "consentGranted": false
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "code": "GasMeterReadFrequency",
+        "description": "Gas Meter Read Frequency",
+        "consentItems": [
+            {
+                "id": 1,
+                "code": "HalfHourly",
+                "description": "Half Hourly",
+                "consentDate": null,
+                "consentGranted": false
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "code": "ElectricitySettlement",
+        "description": "Electricity Settlement",
+        "consentItems": [
+            {
+                "id": 1,
+                "code": "HalfHourly",
+                "description": "Half Hourly",
+                "consentDate": null,
+                "consentGranted": false
+            }
+        ]
+    }
+]

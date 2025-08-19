@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd    http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="supply-status-test1.xml"/>
+ <http:request-config name="HTTP_Request_Configuration-supplystatus">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	<munit:test doc:id="961138e7-4c89-468a-a9ea-7ad90c70bd39" name="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config-200-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="bab94a18-985e-4c5c-9de5-ae9f1dbddf6a" doc:name="Mock Ensek Supply Status Get API Call" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="45f5cf1a-b00e-4815-99f9-166b3ddc3cab" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsString('supply-status-get/success-200/response.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-supplystatus" doc:id="81169b63-2c57-4b70-aa1a-f0b5f585d8f7" doc:name="Request" method="GET" path="/123175/supplyStatus">
+				<http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+				<http:response-validator>
+					<http:failure-status-code-validator values="404"/>
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<logger level="INFO" doc:name="Logger" doc:id="bac527e1-6664-4eba-ac18-2e5747e0b962" message="supplyStatus response 200 : #[%dw 2.0 output application/json --- payload]"/>
+			<munit-tools:assert-that doc:id="a2f2c447-4760-4d7a-aaea-117d7dbe80e6" doc:name=" Status Code is 200" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" message="The HTTP Status code is incorrect!"/>
+			<munit-tools:assert-that doc:id="588b76aa-7322-4db8-a6e7-67d791675713" doc:name="Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://supply-status-get/success-200/finalresponse.json', 'application/json'))]" message="Payload is incorrect!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test doc:id="7899dabb-5da5-4ff0-bdb6-42f0a5cc9d12" name="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config-404-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-supplystatus" doc:id="f15156fa-0759-4582-bb2f-41a55234ce24" doc:name="Request" method="GET" path="/1231756/supplyStatus/nf">
+				<http:headers><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator>
+					<http:success-status-code-validator values="404"/>
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<logger level="INFO" doc:name="Logger" doc:id="9d78f3a7-bc56-4d6c-a2df-ca6495e04cd7" message="supplyStatus response 400 : #[%dw 2.0 output application/json --- payload]"/>
+			<munit-tools:assert-that doc:id="f79563ab-95f8-4b94-80ae-14d81f21c51a" doc:name="Status Code is 404" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!"/>
+			<munit-tools:assert-that doc:id="10c507eb-1b36-46d9-bdf7-72eb0cf67178" doc:name="Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://supply-status-get/404/response.json', 'application/json'))]" message="The response payload is not correct!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test doc:id="323a0a45-4d3b-4ba1-a45c-8e592c66bbf3" name="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config-405-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-supplystatus" doc:id="b9561bfc-b4f5-4842-bf5f-1a92dd61a107" doc:name="Request" method="POST" path="/1231756/supplyStatus">
+				<http:headers><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator>
+					<http:success-status-code-validator values="405"/>
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="b6bda950-d328-4b11-be8d-2099e064ac89" doc:name="Status Code is 405" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!"/>
+			<munit-tools:assert-that doc:id="ecfb0549-d3a4-4834-9a04-a2ab40cca094" doc:name="Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://supply-status-get/405/response.json', 'application/json'))]" message="The response payload is not correct!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test doc:id="e0a00067-5c38-420b-8f99-664ace111d67" name="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config-406-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-supplystatus" doc:id="f85da88f-ca8d-4bf0-8401-21bb37151327" doc:name="Request" method="GET" path="/1231756/supplyStatus">
+				<http:headers><![CDATA[#[{"Accept":"application/xml","X-Correlation-Id": "X-Correlation-Id","Accept": "application/xml"}]]]></http:headers>
+				<http:response-validator>
+					<http:success-status-code-validator values="406"/>
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="a311cb1a-b4d0-4b4c-bbf9-779cac4ac311" doc:name="Status Code is 406" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(406)]" message="The HTTP Status code is not correct!"/>
+			<munit-tools:assert-that doc:id="7876a0e1-7c4f-47cf-94a0-25c01b5a3eeb" doc:name="Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://supply-status-get/406/response.json', 'application/json'))]" message="The response payload is not correct!"/>
+		</munit:validation>
+	</munit:test>
+</mule>

@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "8c47af90-c23b-11ec-a190-000c2997d49a",
+        "error": [
+            {
+                "code": "TE03",
+                "message": "HTTP Method post not allowed for : /{ensekAccountId}/meterpoints"
+            }
+        ]
+    }
+}

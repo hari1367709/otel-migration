@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "efc27e50-c23c-11ec-a190-000c2997d49a",
+        "error": [
+            {
+                "code": "TE02",
+                "message": "/19112/metering-jobs/completion-notification/notfound"
+            }
+        ]
+    }
+}

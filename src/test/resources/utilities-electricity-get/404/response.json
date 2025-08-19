@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "X-Correlation-Id",
+        "error": [
+            {
+                "code": "TE02",
+                "message": "/utilities/electricity/1412084331000/abc"
+            }
+        ]
+    }
+}

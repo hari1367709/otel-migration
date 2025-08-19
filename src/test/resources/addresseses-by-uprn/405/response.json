@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "X-Correlation-Id",
+        "error": [
+            {
+                "code": "TE03",
+                "message": "HTTP Method post not allowed for : /addresses/{uprn}"
+            }
+        ]
+    }
+}

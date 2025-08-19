@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="consent-put-impl-sub-flow" doc:id="c2be3e33-6404-475b-b143-d27462594ea7" >
+	<set-variable value="#[attributes.uriParams.'ensekAccountId']" doc:name="Set Variable AccountId" doc:id="c65547f5-e0d8-42de-8d65-b0a8d118773e" variableName="accountId"/>
+		<parallel-foreach doc:name="Parallel For Each" doc:id="effc563e-9b5b-4786-96cf-d5639413dc3b" >
+			<ee:transform doc:name="Prepare Consent Ensek API Request" doc:id="e5bef162-add0-429f-937f-a89887ae33e0">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="finalpayload"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "ConsentTypeCode": payload.typeCode,
+    "ConsentItemCode": payload.itemCode,
+    ("ConsentFromDate": payload.date) if(!isEmpty(payload.date))
+}]]></ee:set-variable>
+				<ee:set-variable variableName="finaluri"><![CDATA[%dw 2.0
+output application/java
+---
+p('ensek.putconsent.uri') replace "{accountid}" with vars.accountId]]></ee:set-variable>
+				<ee:set-variable variableName="finalmethod"><![CDATA["PUT"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+			<flow-ref doc:name="Call Common SigV4 Auth Code Sub Flow" doc:id="a5a21bc6-09a4-4314-b719-e9a637d58ab7" name="utility-sub-flow-ensek-aws-sigv4-auth-code" />
+			<logger level="DEBUG" doc:name="Log Debug Request" doc:id="a9eaac5e-a68f-42d9-bfe9-61c15edc1092" message="Request payload put consent : #[vars.finalpayload]" category="${logging.custom.category}" />
+			<http:request method="#[vars.finalmethod]" doc:name="Call Ensek Consent API" doc:id="a0af92ca-9011-44e0-b9cb-12547630a4aa" path="#[vars.finaluri]" config-ref="HTTPRequestConfig-Ensek" sendCorrelationId="NEVER">
+			<http:body><![CDATA[#[vars.finalpayload]]]></http:body>
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-Amz-Date" : vars.xAmzDate ++ "",
+	"Authorization" : vars.authStringSigv4,
+	"Host" : p('ensek.endpoint.host'),
+	"Content-Type" : "application/json",
+	"traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+	"tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+}]]]></http:headers>
+		
+		
+		</http:request>
+		</parallel-foreach>
+		<ee:transform doc:name="Set Empty Response" doc:id="0c52751f-b26d-402f-b39a-babf9dbd29ca">
+				<ee:message>
+				<ee:set-payload resource="dwl/common/set-empty-payload.dwl" />
+				</ee:message>
+			</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3a20d529-6c15-4aff-8bdb-5cdabb37d48e" type="MULE:COMPOSITE_ROUTING">
+				<set-variable value="#[if ((sizeOf(error.errorMessage.payload.^raw) &gt; 0) and (error.errorMessage.attributes.headers.&quot;content-type&quot; == &quot;application/json&quot;)) (write(error.errorMessage.payload ++ {endpointUrl: error.description},'application/json')) else if (sizeOf(error.errorMessage.payload.^raw) &gt; 0) (write(error.errorMessage.payload,'application/json')) else (&quot;No Error Message&quot;)]" doc:name="Set Var More Info" doc:id="8695f794-ff13-4658-b08a-0f4fbceddf49" variableName="moreInfo"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<sub-flow name="consent-get-sub-flow" doc:id="3d51ae5f-ebff-47ff-bab0-8b7424ba83e9" >
+		<ee:transform doc:name="Prepare Consent GET Ensek API Request" doc:id="0861eeda-00ee-4d02-990c-d3df64916815" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="finaluri" ><![CDATA[%dw 2.0
+output application/java
+---
+p('ensek.getconsent.uri') replace "{accountid}" with attributes.uriParams.'ensekAccountId']]></ee:set-variable>
+				<ee:set-variable variableName="finalmethod" ><![CDATA["GET"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Call Common SigV4 Auth Code Sub Flow" doc:id="da8c2e29-891f-44a2-ab8d-1838de4f8255" name="utility-sub-flow-ensek-aws-sigv4-auth-code"/>
+		<http:request method="#[vars.finalmethod]" doc:name="Call Ensek Consent Get API" doc:id="ec6dc26b-db73-4466-a191-c7db7395d213" path="#[vars.finaluri]" config-ref="HTTPRequestConfig-Ensek" sendCorrelationId="NEVER">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-Amz-Date" : vars.xAmzDate ++ "",
+	"Authorization" : vars.authStringSigv4,
+	"Host" : p('ensek.endpoint.host'),
+	"Content-Type" : "application/json",
+	"traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+	"tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+}]]]></http:headers>
+		
+		
+		</http:request>
+		<logger level="DEBUG" doc:name="Log Debug Response" doc:id="cc6e37cc-6d43-4be5-bd59-e605f77efef4" message="Response payload get consent : #[payload]" category="${logging.custom.category}" />
+	</sub-flow>
+	<flow name="consent-delete-sub-flow" doc:id="91372f9f-fddd-47ae-ae6a-0c4d01d456d4" >
+		<set-variable value="#[attributes.uriParams.'ensekAccountId']" doc:name="Set Variable AccountId" doc:id="47a1c98f-5194-4e31-9485-bf9bf773eeeb" variableName="accountId"/>
+		<parallel-foreach doc:name="Parallel For Each - TypeAndItem Code" doc:id="0c2536c1-8a82-4e39-b555-ad18e6d4749b" >
+			<ee:transform doc:name="Prepare Consent  Delete Ensek API Request" doc:id="cc67a01d-8109-4b07-b945-b562d33a3a4c">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="finaluri"><![CDATA[%dw 2.0
+output application/java
+---
+(((p('ensek.deleteconsent.uri') replace "{accountid}" with vars.accountId) replace "{typecode}" with (payload.typeCode)) replace "{itemcode}" with (payload.itemCode))]]></ee:set-variable>
+				<ee:set-variable variableName="finalmethod"><![CDATA["DELETE"]]></ee:set-variable>
+					<ee:set-variable variableName="finalpayload" ><![CDATA[%dw 2.0 output application/json --- {}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+			<flow-ref doc:name="Call Common SigV4 Auth Code Sub Flow" doc:id="cb278af4-0a94-4b6f-9b1b-90ed19c821ae" name="utility-sub-flow-ensek-aws-sigv4-auth-code" />
+			<http:request method="#[vars.finalmethod]" doc:name="Call Ensek Delete Consent API" doc:id="1baf6e92-77e4-4c12-aca6-04af10b39f85" path="#[vars.finaluri]" config-ref="HTTPRequestConfig-Ensek" sendCorrelationId="NEVER">
+				<http:body ><![CDATA[#[vars.finalpayload]]]></http:body>
+				<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-Amz-Date" : vars.xAmzDate ++ "",
+	"Authorization" : vars.authStringSigv4,
+	"Host" : p('ensek.endpoint.host'),
+	"Content-Type" : "application/json",
+	"traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+	"tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+}]]]></http:headers>
+		
+		
+		</http:request>
+		</parallel-foreach>
+		<ee:transform doc:name="Set Empty Response" doc:id="fb5285b5-1ee5-4eb5-aa6f-f7c062ea7159">
+				<ee:message>
+				<ee:set-payload resource="dwl/common/set-empty-payload.dwl" />
+				</ee:message>
+			</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="336cee9a-5cca-45ad-ba7d-a8c9b9f1696a" type="MULE:COMPOSITE_ROUTING">
+				<set-variable value="#[if ((sizeOf(error.errorMessage.payload.^raw) &gt; 0) and (error.errorMessage.attributes.headers.&quot;content-type&quot; == &quot;application/json&quot;)) (write(error.errorMessage.payload ++ {endpointUrl: error.description},'application/json')) else if (sizeOf(error.errorMessage.payload.^raw) &gt; 0) (write(error.errorMessage.payload,'application/json')) else (&quot;No Error Message&quot;)]" doc:name="Set Var More Info" doc:id="0b78914b-301a-4deb-a4c8-64c3fdced618" variableName="moreInfo"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

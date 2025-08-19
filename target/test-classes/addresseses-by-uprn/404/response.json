@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "X-Correlation-Id",
+    "error": [
+      {
+        "code": "TE02",
+        "message": "/addresses/100070403101/abc"
+      }
+    ]
+  }
+}

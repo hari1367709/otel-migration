@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "2166edb0-c23d-11ec-a190-000c2997d49a",
+        "error": [
+            {
+                "code": "TE02",
+                "message": "/19112/metering-jobs/smartjob-notification/notfound"
+            }
+        ]
+    }
+}

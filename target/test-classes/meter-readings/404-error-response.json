@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "X-Correlation-Id",
+    "error": [
+      {
+        "code": "TE02",
+        "message": "/194497/meterpoints/271375/readings/nf"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+[
+    {
+        "typeCode": "ElectricityMeterReadFrequency",
+        "itemCode": "HalfHourly",
+        "date": "2022-01-01"
+    },
+    {
+        "typeCode": "GasMeterReadFrequency",
+        "itemCode": "HalfHourly",
+        "date": "2022-01-01"
+    },
+    {
+        "typeCode": "ElectricitySettlement",
+        "itemCode": "HalfHourly",
+        "date": "2022-01-01"
+    }
+]

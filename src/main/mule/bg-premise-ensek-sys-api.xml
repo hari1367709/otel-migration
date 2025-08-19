@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <flow name="bg-premise-ensek-sys-api-main">
+        <http:listener config-ref="bg-premise-ensek-sys-api-httpListenerConfig" path="${httpListener.path}">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <flow-ref doc:name="Call Otel Common Sub Flow" doc:id="84f8ec33-d651-4f39-88dc-0f8178c467f5" name="tracing-add-mdc-trace-context-sub-flow"/>
+        <apikit:router config-ref="bg-premise-ensek-sys-api-config" />
+        <error-handler ref="global-error-handler" />
+    </flow>
+    <flow name="get:\(ensekAccountId)\meterpoints:bg-premise-ensek-sys-api-config">
+        <flow-ref doc:name="metertechnical-details-impl-sub-flow" doc:id="69462195-e95d-49b1-b865-146a60d74bd5" name="metertechnical-details-impl-sub-flow" />
+    </flow>
+    <flow name="get:\meterpoints\(meterpointnumber):bg-premise-ensek-sys-api-config">
+        <flow-ref doc:name="call sub-flow-meterpoints" doc:id="7013c888-0e0e-4a6f-8e14-b96504733137" name="sub-flow-meterpoints" />
+    </flow>
+    <flow name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config">
+        <flow-ref doc:name="Call Jobs Notification Impl Sub Flow" doc:id="e917ca1d-56ae-43c5-8266-8837d682a064" name="jobs-completion-notification-impl-sub-flow" />
+    </flow>
+    <flow name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config">
+        <flow-ref doc:name="Call Smart Job Notification Sub Flow" doc:id="b8594fae-599f-4812-b0af-350ab418d065" name="smart-job-notification-impl-sub-flow" />
+    </flow>
+    <flow name="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config">
+		<flow-ref doc:name="Call Consent Put Impl Sub Flow" doc:id="1cf5cd5f-c0b6-4f75-b344-564eab2aaae1" name="consent-put-impl-sub-flow"/>
+	</flow>
+	<flow name="get:\(ensekAccountId)\consent:bg-premise-ensek-sys-api-config">
+		<flow-ref doc:name="Call Consent Get Impl Sub Flow" doc:id="92257cbd-874b-4c57-a81b-fc72596f916c" name="consent-get-sub-flow"/>
+	</flow>
+	<flow name="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config">
+		<flow-ref doc:name="Call Consent Delete Impl Sub Flow" doc:id="2664f39c-7c95-4d13-8acb-0a450cb164be" name="consent-delete-sub-flow"/>
+	</flow>
+	<flow name="get:\(ensekAccountId)\region:bg-premise-ensek-sys-api-config">
+		<flow-ref doc:name="Call Region Get Impl Sub Flow" doc:id="56b310bb-ee16-48d6-99e3-ce04c993fd89" name="region-get-sub-flow"/>
+	</flow>
+	<flow name="get:\(ensekAccountId)\rotaBlockDisconnectionCode:bg-premise-ensek-sys-api-config">
+		<flow-ref doc:name="Call RotaBlockDisconnectionCode Get Impl Sub Flow" doc:id="ca2eaba3-6236-4a45-a2eb-5db05e32b73f" name="rota-block-disconnection-code-get-sub-flow"/>
+	</flow>
+	<flow name="get:\addresses:bg-premise-ensek-sys-api-config">
+    	<flow-ref doc:name="addresses-by-postcode-get-sub-flow" doc:id="8215df2d-2ce6-4730-be7a-c231d674b4c2" name="addresses-by-postcode-get-sub-flow"/>
+    </flow>
+	<flow name="get:\addresses\(uprn):bg-premise-ensek-sys-api-config" doc:id="8af3dd94-ed01-4030-b945-fe2a6f4722ee" >
+		<flow-ref doc:name="Call Addresses Get Impl SubFlow" doc:id="428bfb59-dd9c-4c12-8524-8c0485ba4cfc" name="addresses-get-sub-flow"/>
+	</flow>
+	<flow name="get:\(ensekAccountId)\meterpoints\(meterpointId)\readings:bg-premise-ensek-sys-api-config">
+		<flow-ref doc:name="Call Meter Readings Impl Sub Flow" doc:id="63f16cce-0834-46a5-a81e-5adf932c97d8" name="meter-readings-impl-sub-flow"/>
+	</flow>
+	<flow name="get:\(ensekAccountId)\supplyStatus:bg-premise-ensek-sys-api-config" doc:id="c373d613-ad1b-41c2-8729-6f7bdf91408c" >
+		<flow-ref doc:name="supplyStatus-get-sub-flow" doc:id="178c5b16-5a95-4dfd-9e77-cc465bed20b9" name="supplyStatus-get-sub-flow"/>
+	</flow>
+	<flow name="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config" doc:id="70297a54-947a-4cf1-9d82-9b64e0a90bcb" >
+		<flow-ref doc:name="smart-read-status-get-sub-flow" doc:id="6bc755a5-4ba9-4f78-a964-3eefa5f3d6be" name="smart-read-status-get-sub-flow"/>
+	</flow>
+</mule>

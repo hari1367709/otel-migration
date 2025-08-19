@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:awsv4auth="http://www.mulesoft.org/schema/mule/awsv4auth" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/awsv4auth http://www.mulesoft.org/schema/mule/awsv4auth/current/mule-awsv4auth.xsd">
+
+	<!-- UTILITY SUB FLOW -->
+	
+	<!-- SUB FLOW FOR VALIDATION CHECK -->
+
+	<!-- PUBLISH SUB FLOW -->
+	<sub-flow name="utility-sub-flow-ensek-aws-sigv4-auth-code" doc:id="02b0c6fc-2344-46a4-bfe9-5df7366efd26" >
+		<set-variable value="#[output application/json --- (now() &gt;&gt; &quot;UTC&quot;) as DateTime  {format:&quot;yyyyMMdd'T'HHmmss'Z'&quot;}]" doc:name="Set Amz Date" doc:id="2068ac3d-96fc-4ae8-a602-d82d6b0a6e83" variableName="xAmzDate"/>
+		<awsv4auth:get-authorization-string doc:name="Get authorization string" 
+		doc:id="483b6d9d-0cf0-45fc-bc21-56f49473fea2" 
+		accessKey="${ensek.aws.accesskey}" 
+		secretKey="${ensek.aws.secretkey}" 
+		serviceName="${ensek.aws.servicename}" 
+		timeStamp="#[vars.xAmzDate]" 
+		hostName="${ensek.endpoint.host}" 
+		canonicalURI='#[vars.finaluri]' requestType='#[vars.finalmethod default "GET"]' regionName="${ensek.aws.region}" body="#[vars.finalpayload default payload]" queryString='#[vars.queryString replace "?" with ""]'/>
+		<set-variable value="#[payload]" doc:name="Save Auth String" doc:id="697d22f4-c3eb-4fb1-8488-99aeceef4427" variableName="authStringSigv4"/>
+	</sub-flow>
+	
+</mule>

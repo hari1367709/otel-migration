@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "115af510-c23d-11ec-a190-000c2997d49a",
+        "error": [
+            {
+                "code": "TE03",
+                "message": "HTTP Method get not allowed for : /{ensekAccountId}/metering-jobs/smartjob-notification"
+            }
+        ]
+    }
+}

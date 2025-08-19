@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="metertechnical-details-impl-sub-flow" doc:id="46e48cb3-8d9c-4e84-8109-3da113af6bde" >
+		<ee:transform doc:name="Set Required Vars" doc:id="a09ed3a8-203b-4dc8-bba9-7c011986ba19" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable resource="dwl/metertechnical-details/set-ensek-dynamic-uri.dwl" variableName="finaluri" />
+				<ee:set-variable variableName="queryString" ><![CDATA[if (!isEmpty(attributes.queryParams.includeHistory) and attributes.queryParams.includeHistory == "true") p('ensek.metertechnicalendpointwithproxy.queryString') else ""]]></ee:set-variable>
+			
+
+</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Call Common SigV4 Auth Code Sub Flow" doc:id="1e09d33b-be15-4c9e-be44-aceaf3d8050f" name="utility-sub-flow-ensek-aws-sigv4-auth-code"/>
+		<http:request method="GET" doc:name="Call Ensek Meterpoint API" doc:id="b360e57e-0989-4fc7-bc23-a4070bf1b9e7" path='#[vars.finaluri ++ (vars.queryString default "")]' config-ref="HTTPRequestConfig-Ensek" sendCorrelationId="NEVER">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-Amz-Date" : vars.xAmzDate ++ "",
+	"Authorization" : vars.authStringSigv4,
+	"Host" : p('ensek.endpoint.host'),
+	"Content-Type" : "application/json",
+	"traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+	"tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+}]]]></http:headers>
+		
+		
+		</http:request>
+		<ee:transform doc:name="Set Response" doc:id="9deab5fe-5112-428d-b3bc-20930cfa338e" >
+			<ee:message >
+				<ee:set-payload resource="dwl/metertechnical-details/set-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Log Meter Tech Response" doc:id="77af2c5b-10e7-4d36-b616-5dd91f5c46b4" message="Meter tech response : #[payload]"/>
+	</sub-flow>
+</mule>

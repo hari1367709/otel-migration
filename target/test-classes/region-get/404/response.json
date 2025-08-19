@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "X-Correlation-Id",
+    "error": [
+      {
+        "code": "TE02",
+        "message": "/101374/region/nf"
+      }
+    ]
+  }
+}

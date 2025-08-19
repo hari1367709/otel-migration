@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "X-Correlation-Id",
+    "error": [
+      {
+        "code": "TE05",
+        "message": "Unsupported mediaType"
+      }
+    ]
+  }
+}

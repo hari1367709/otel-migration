@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<sub-flow name="jobs-completion-notification-impl-sub-flow" doc:id="5596cd64-21e5-4ae8-b448-86377b969695" >
+		<ee:transform doc:name="Prepare Request Message" doc:id="63dda789-8ce3-4dec-a0dc-3fc2bd900feb" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="finaluri" ><![CDATA[%dw 2.0
+output application/java
+---
+p('ensek.jobscompletionendpoint.uri')]]></ee:set-variable>
+				<ee:set-variable variableName="finalmethod" ><![CDATA["POST"]]></ee:set-variable>
+				<ee:set-variable resource="dwl/jobscompletion-notification/prepare-request.dwl" variableName="finalpayload" />
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Call Common Ensek Auth Sub Flow" doc:id="96bb969e-5efd-4b2e-b9a6-6c7b6ac6f802" name="utility-sub-flow-ensek-aws-sigv4-auth-code"/>
+		<http:request method="POST" doc:name="Call Ensek Jobs Completion API" doc:id="298f0c8f-7ec9-45a2-89f1-c02d57d7d1f3" config-ref="HTTPRequestConfig-Ensek" path="#[vars.finaluri]">
+			<http:body ><![CDATA[#[vars.finalpayload]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"X-Amz-Date" : vars.xAmzDate ++ "",
+	"Authorization" : vars.authStringSigv4,
+	"Host" : p('ensek.endpoint.host'),
+	"Content-Type" : "application/json",
+	"traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+	"tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+}]]]></http:headers>
+		</http:request>
+	</sub-flow>
+</mule>

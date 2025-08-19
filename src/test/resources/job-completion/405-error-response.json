@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "bf6227b0-c23c-11ec-a190-000c2997d49a",
+        "error": [
+            {
+                "code": "TE03",
+                "message": "HTTP Method put not allowed for : /{ensekAccountId}/metering-jobs/completion-notification"
+            }
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1079381,
+        "readingType": "Actual",
+        "meterReadingStatusUID": "UNVALIDATED",
+        "meterPointId": 271375,
+        "dateTime": "2023-12-21T00:00:00",
+        "createdDate": "2023-12-20T17:02:56.237",
+        "readings": [
+            {
+                "id": 1339972,
+                "registerId": 317415,
+                "value": 3000.0,
+                "sourceComponentUid": "GAS",
+                "registerReference": "G",
+                "Attributes": null
+            }
+        ],
+        "meterReadingSource": "DCOPENING",
+        "required": null
+    }
+]

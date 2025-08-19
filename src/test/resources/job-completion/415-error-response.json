@@ -1,0 +1,11 @@
+{
+    "fault": {
+        "transId": "b2921540-c462-11ec-8203-06718d0478a0",
+        "error": [
+            {
+                "code": "TE05",
+                "message": "Unsupported mediaType"
+            }
+        ]
+    }
+}

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd ">
+    <munit:config name="job-completion-test.xml" />
+ <http:request-config name="HTTPS_Request_Configuration_completion">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	<munit:test name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-202-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-202-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+           <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock job completion API" doc:id="a9c1d981-684d-4cdd-997d-5434afb66ea1" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://job-completion/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('job-completion/request.json')]" doc:name="Request payload"/>
+			<http:request config-ref="HTTPS_Request_Configuration_completion" method="POST" path="/19112/metering-jobs/completion-notification">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="202" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution> 
+     <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(202)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 202" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://job-completion/response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+   <munit:test name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-404-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+           <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock job completion API" doc:id="ad8d73a3-a96b-4b21-9eee-8aea9afd01d8" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://job-completion/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('job-completion/request.json')]" doc:name="Request payload"/>
+			<http:request config-ref="HTTPS_Request_Configuration_completion" method="POST" path="/19112/metering-jobs/completion-notification/notfound" correlationId="efc27e50-c23c-11ec-a190-000c2997d49a">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="404" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution> 
+     <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://job-completion/404-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+       <munit:test name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-405-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-405-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+           <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock job completion API" doc:id="15bf27ff-2e24-4bc8-ba4b-5a1f8ea35302" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://job-completion/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('job-completion/request.json')]" doc:name="Request payload"/>
+			<http:request config-ref="HTTPS_Request_Configuration_completion" method="PUT" path="/19112/metering-jobs/completion-notification" correlationId="bf6227b0-c23c-11ec-a190-000c2997d49a">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="405" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution> 
+     <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 405" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://job-completion/405-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+           <munit:test name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-415-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-415-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+           <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock job completion API" doc:id="0aaf30c7-dd33-49bc-a00a-cb5c11ba1c4d" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://job-completion/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('job-completion/request.json')]" doc:name="Request payload"/>
+			<http:request config-ref="HTTPS_Request_Configuration_completion" method="POST" path="/19112/metering-jobs/completion-notification" correlationId="b2921540-c462-11ec-8203-06718d0478a0">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/xml"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="415" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution> 
+     <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(415)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 415" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://job-completion/415-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+               <munit:test name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-406-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-406-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+           <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock job completion API" doc:id="75b4d600-20e6-4d42-8e6b-c92e85229fad" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://job-completion/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('job-completion/request.json')]" doc:name="Request payload"/>
+			<http:request config-ref="HTTPS_Request_Configuration_completion" method="POST" path="/19112/metering-jobs/completion-notification" correlationId="d4e14a20-c468-11ec-8203-06718d0478a0">
+                <http:headers><![CDATA[#[{"Accept":"application/xml","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="406" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution> 
+     <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(406)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 406" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://job-completion/406-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+                <munit:test name="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-400-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\completion-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('job-completion/400-request.json')]" doc:name="Request payload"/>
+			<http:request config-ref="HTTPS_Request_Configuration_completion" method="POST" path="/191xx/metering-jobs/completion-notification" correlationId="95959c60-c484-11ec-8203-06718d0478a0">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="400" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution> 
+     <munit:validation>
+            <logger level="INFO" doc:name="Logger" doc:id="5b318b6e-c225-475c-a0d7-5f39817290b8" message="Job completion : #[%dw 2.0 output application/json --- payload]"/>
+			<munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+        	 <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://job-completion/400-error.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+      </mule>

@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "X-Correlation-Id",
+    "error": [
+      {
+        "code": "TE01",
+        "message": "/0/typeCode PK is not a valid enum value\n/0/itemCode KP is not a valid enum value"
+      }
+    ]
+  }
+}

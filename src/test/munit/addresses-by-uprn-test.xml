@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd    http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="addresses-by-uprn-test.xml"/>
+	    <http:request-config name="HTTP_Request_Configuration-GetAddresses">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	
+	<munit:test description="Verifying functionality of [get:\addresses\(uprn):bg-premise-ensek-sys-api-config-200-application\json]" doc:id="90cfd4c4-b1ee-4381-95cf-80c22b292169" name="get:\addresses\(uprn):bg-premise-ensek-sys-api-config-200-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\addresses\(uprn):bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="81b1950a-d01a-4568-8e54-a6336506632a" doc:name="Mock Addresses Lookup Ensek API Call" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute attributeName="doc:name" whereValue="Call Ensek Addresses Get API"/>
+					<munit-tools:with-attribute attributeName="doc:id" whereValue="05a873f8-3de2-4cce-b220-fb0a2b8f4cdd"/>
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload mediaType="application/json" value="#[output application/json --- readUrl('classpath://addresseses-by-uprn/success-200/ensek-response.json')]"/>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-GetAddresses" doc:id="f7a0f4cc-87d2-4e93-bc8b-356a44d2dc34" doc:name="Request" method="GET" path="/addresses/100070403101">
+				<http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="adc5856f-e370-4963-88ab-039542d4a9d7" doc:name="Assert That Status Code is 200" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" message="The HTTP Status code is incorrect!"/>
+			<munit-tools:assert-that doc:id="99e38ecf-1eb6-4130-bd9a-8031e8ab636e" doc:name="Assert That Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://addresseses-by-uprn/success-200/response.json', 'application/json'))]" message="Payload is incorrect!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test description="Verifying functionality of [get:\addresses\(uprn):bg-premise-ensek-sys-api-config-204-application\json]" doc:id="95725843-eed0-44d1-b3da-3fcc1136cf99" name="get:\addresses\(uprn):bg-premise-ensek-sys-api-config-204--FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\addresses\(uprn):bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="8b3cdc7c-436c-4138-95cb-354cc55bee5e" doc:name="Mock Addresses Lookup Ensek API Call" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute attributeName="doc:name" whereValue="Call Ensek Addresses Get API"/>
+					<munit-tools:with-attribute attributeName="doc:id" whereValue="05a873f8-3de2-4cce-b220-fb0a2b8f4cdd"/>
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:attributes mediaType="application/json" value="#[MunitTools::getResourceAsString('addresseses-by-uprn/success-204/attributes.json')]"/>
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-GetAddresses" doc:id="520c702e-dff2-4beb-a219-96f4f9bea10d" doc:name="Request" method="GET" path="/addresses/100070403101">
+				<http:headers><![CDATA[#[{"Content-Type":"application/json"}]]]></http:headers>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="167d714e-7c9b-4832-ae0e-917187899cad" doc:name="Assert That Status Code is 204" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(204)]" message="The HTTP Status code is not correct!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test description="Verifying functionality of [get:\addresses\(uprn):bg-premise-ensek-sys-api-config-404-application\json]" doc:id="d6a4cc4c-7d21-4fa1-af2b-08476ad613d2" name="get:\addresses\(uprn):bg-premise-ensek-sys-api-config-404-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\addresses\(uprn):bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-GetAddresses" doc:id="012773cd-83a5-42c2-8d43-ac4d1b390697" doc:name="Request" method="GET" path="/addresses/100070403101/abc">
+				<http:headers><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator>
+					<http:success-status-code-validator values="404"/>
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="153baeda-9129-4be5-bad2-0171d7d55756" doc:name="Assert That Status Code is 404" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!"/>
+			<munit-tools:assert-that doc:id="b12052f0-b26a-4135-afed-fc5925e436f7" doc:name="Assert That - Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://addresseses-by-uprn/404/response.json', 'application/json'))]" message="The response payload is not correct!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test description="Verifying functionality of [get:\addresses\(uprn):bg-premise-ensek-sys-api-config-405-application\json]" doc:id="f6838583-20c1-4777-8f2b-4a104a8de0c2" name="get:\addresses\(uprn):bg-premise-ensek-sys-api-config-405-application\json-FlowTest">
+		<munit:enable-flow-sources>
+			
+			<munit:enable-flow-source value="get:\addresses\(uprn):bg-premise-ensek-sys-api-config"/>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-GetAddresses" doc:id="da40e9c2-eb95-4c86-930c-1d349585e284" doc:name="Request" method="POST" path="/addresses/100070403101">
+				<http:headers><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator>
+					<http:success-status-code-validator values="405"/>
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="b337f523-4fc9-4699-9a85-02f272d64902" doc:name="Assert That Status Code is 405" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!"/>
+			<munit-tools:assert-that doc:id="98cad026-db0d-45df-9a1b-e4b792d7be83" doc:name="Assert That - Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://addresseses-by-uprn/405/response.json', 'application/json'))]" message="The response payload is not correct!"/>
+		</munit:validation>
+	</munit:test>
+	
+</mule>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd    http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="smart-read-status-Test.xml"/>
+	 <http:request-config name="HTTP_Request_Configuration-smartreadstatus">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	<munit:test name="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config-200-application\json-flowTest" doc:id="96529347-1475-4248-a62c-aef0748c681d" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+			<munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Ensek Smart Read Status Get API Call" doc:id="434b32a5-95f8-4d4d-89a5-cfe1a2774a1d" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Smart Read Status Get API" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="d1b1e1c7-d17a-4518-95e9-290c7a098926" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://smart-read-status-get/success-200/response.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="d08ace82-e2ae-4de5-bfdf-1c6fe1b780ba" path="/137293/meterpoints/1800031352075/smartReadStatus" config-ref="HTTP_Request_Configuration-smartreadstatus">
+				<http:headers ><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:failure-status-code-validator values="404" />
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Status code is 200" doc:id="506ef9c4-2911-46ad-b1a7-13a44c746b75" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" message="The HTTP Status code is incorrect!"/>
+			<munit-tools:assert-that doc:name="Payload is Expected" doc:id="b975b6bc-8311-4801-885b-bbcd1e12af92" message="Payload is incorrect!" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-read-status-get/success-200/finalresponse.json', 'application/json'))]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config-404TOempty-application\json-flowTest" doc:id="22f02cf2-45a8-4a17-8287-c9598fa2b938">
+		
+		<munit:enable-flow-sources>
+			
+			
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+			<munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config" />
+		</munit:enable-flow-sources>
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock Ensek Smart Read Status Get API Call" doc:id="603a18e6-6fa7-4988-8829-af3e39e23cd9" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Call Ensek Smart Read Status Get API" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="d1b1e1c7-d17a-4518-95e9-290c7a098926" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="be669db0-6cee-48fa-82d8-0fc11b6646dd" config-ref="HTTP_Request_Configuration-smartreadstatus" path="/137293/meterpoints/1800031352075/smartReadStatus">
+				<http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+				<http:response-validator>
+					<http:failure-status-code-validator values="404" />
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Status code is 200" doc:id="71a19272-4281-42d1-a089-6b0d13e65041" message="The HTTP Status code is incorrect!" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+			<munit-tools:assert-that doc:name="Payload is Expected" doc:id="f9c19d7b-2599-4344-9204-49dcaf4a8afa" message="Payload is incorrect!" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-read-status-get/success-200-empty-status/finalresponse.json', 'application/json'))]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config-404-application\json-flowTest" doc:id="f4g014da-976e-437c-bf78-4e2eb7d99f4a" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+			<munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config" />
+		</munit:enable-flow-sources>
+		<munit:execution >
+			<http:request method="GET" doc:name="Request" doc:id="3c23827d-2223-4525-a25e-ae55a7836109" config-ref="HTTP_Request_Configuration-smartreadstatus" path="/137293/meterpoints/18000313520753/smartReadStatus/notfounde" correlationId="munitstest">
+				<http:headers ><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="404" />
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Logger" doc:id="56f36b33-c976-4b03-b009-06d92defa333" message="smartReadStatus response : #[%dw 2.0 output application/json --- payload]"/>
+			<munit-tools:assert-that doc:name="Status Code is 404" doc:id="56aca98f-0441-4738-ab26-9585b309549a" message="The HTTP Status code is not correct!" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" />
+			<munit-tools:assert-that doc:name="Payload is Expected" doc:id="2b453662-bd37-4c47-94f4-272f92ccdcdb" message="The response payload is not correct!" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-read-status-get/404/response.json', 'application/json'))]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config-405-application\json-flowTest" doc:id="5f1f8ec5-3f45-4925-8fa8-3cf96ee28cc5" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+			<munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config" />
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request method="POST" doc:name="Request" doc:id="50439ea3-1c61-4bc3-a092-03f038af5c9e" config-ref="HTTP_Request_Configuration-smartreadstatus" path="/137293/meterpoints/18000313520753/smartReadStatus">
+			<http:headers><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+			<http:response-validator>
+				<http:success-status-code-validator values="405" />
+			</http:response-validator>
+		</http:request>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Status Code is 405" doc:id="840f3750-e052-4723-a5e5-c547786ff422" message="The HTTP Status code is not correct!" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" />
+			<munit-tools:assert-that doc:name="Payload is Expected" doc:id="ba8fbe6f-3ec3-4739-a1ac-93febaa9e982" message="The response payload is not correct!" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-read-status-get/405/response.json', 'application/json'))]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config-406-application\json-flowTest" doc:id="67ff4bdd-1387-49cf-9501-f04009340bee" >
+		<munit:enable-flow-sources >
+			
+			<munit:enable-flow-source value="get:\(ensekAccountId)\meterpoints\(meterpointReferenceNumber)\smartReadStatus:bg-premise-ensek-sys-api-config" />
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+		</munit:enable-flow-sources>
+		<munit:execution >
+			<http:request method="GET" doc:name="Request" doc:id="66bc77b8-ba0-4bd0-91a9-47f373b5a6ba" config-ref="HTTP_Request_Configuration-smartreadstatus" path="/137293/meterpoints/18000313520753/smartReadStatus" >
+				<http:headers ><![CDATA[#[{"Accept":"application/xml","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="406" />
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Status Code is 406" doc:id="fc15ef38-f258-4280-b69e-3d2f3cdfd4fb" message="The HTTP Status code is not correct!" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(406)]" />
+			<munit-tools:assert-that doc:name="Payload is Expected" doc:id="4b25a431-d6dd-400b-b642-9b40f9bacfb3" message="The response payload is not correct!" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-read-status-get/406/response.json', 'application/json'))]" />
+		</munit:validation>
+	</munit:test>
+	
+</mule>

@@ -1,0 +1,20 @@
+[
+    {
+        "categoryType": "API Accessibility",
+        "categoryValues": [
+            "Internal"
+        ]
+    },
+    {
+        "categoryType": "API Layer",
+        "categoryValues": [
+            "System"
+        ]
+    },
+    {
+        "categoryType": "Application Systems",
+        "categoryValues": [
+            "Ensek"
+        ]
+    }
+]

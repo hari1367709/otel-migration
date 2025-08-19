@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "X-Correlation-Id",
+    "error": [
+      {
+        "code": "TE02",
+        "message": "/1231756/supplyStatus/nf"
+      }
+    ]
+  }
+}

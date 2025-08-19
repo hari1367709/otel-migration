@@ -1,0 +1,10 @@
+[
+    {
+        "typeCode": "ElectricityMeterReadFrequency",
+        "itemCode": "HalfHourly"
+    },
+    {
+        "typeCode": "GasMeterReadFrequency",
+        "itemCode": "HalfHourly"
+    }
+]

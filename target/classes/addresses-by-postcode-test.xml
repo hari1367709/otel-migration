@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd    http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="addresses-by-postcode-test.xml"/>
+	    <http:request-config name="HTTP_Request_Configuration-GetAddressesByPostcode">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	
+	<munit:test description="addresses-by-postcode-success-test" doc:id="c5f2597b-e619-4a9b-a713-dddd7d0cc2b3" name="get-addresses-by-postcode-success-test">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\addresses:bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="5574c36c-a9c0-4f86-b7fe-88e35e436d5f" doc:name="Mock Addresses Lookup Ensek API Call" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute attributeName="doc:name" whereValue="Call Ensek Addresses by Postcode Get API"/>
+					<munit-tools:with-attribute attributeName="doc:id" whereValue="dac0593d-c18f-494b-a7f9-fe14a923ae93"/>
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload mediaType="application/json" value="#[output application/json --- readUrl('classpath://addresses-by-postcode/addresses-by-postcode-ensek-response.json')]"/>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-GetAddressesByPostcode" doc:id="425c28fe-d54b-4d06-9b2c-9e8b1881e076" doc:name="Request" method="GET" path="/addresses?postcode=SM67FF">
+				<http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+			</http:request>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="070970e7-2ee5-4a80-9ad1-a8212cecf1d8" doc:name="Assert That Status Code is 200" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" message="The HTTP Status code is incorrect!"/>
+			<munit-tools:assert-that doc:id="d6bab544-e609-4f0f-b8a2-a8a38217e7f4" doc:name="Assert That Payload is Expected" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://addresses-by-postcode/addresses-by-postcode-final-response.json', 'application/json'))]" message="Payload is incorrect!"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test description="addresses-by-postcode-error-test" 
+				doc:id="2fbf923c-8329-4b8a-83b2-9a339529e63a" 
+				name="get-addresses-by-postcode-error-test">
+		<munit:enable-flow-sources>
+			<munit:enable-flow-source value="bg-premise-ensek-sys-api-main"/>
+			<munit:enable-flow-source value="get:\addresses:bg-premise-ensek-sys-api-config"/>
+		</munit:enable-flow-sources>
+		<munit:execution>
+			<http:request config-ref="HTTP_Request_Configuration-GetAddressesByPostcode" doc:id="ead1433f-adfe-4ded-a8a9-01cb7a5fab3d" doc:name="Request" method="GET" path="/addresses/404test?postcode=SM67FF">
+				<http:headers ><![CDATA[#[{"Accept":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="501" />
+				</http:response-validator>
+			</http:request>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert That Status Code is 501" doc:id="299c7f05-7451-4536-8ec9-fa9e56c6c92b" message="The HTTP Status code is not correct!" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(501)]" />
+			<munit-tools:assert-that doc:name="Assert That - Payload is Expected" doc:id="421a0b3f-ea14-4232-9afd-efffa732a8f3" message="The response payload is not correct!" expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://addresses-by-postcode/addresses-by-postcode-501-response.json', 'application/json'))]" />
+		</munit:validation>
+	</munit:test>
+	
+</mule>

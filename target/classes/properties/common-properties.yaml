@@ -1,0 +1,43 @@
+#App properties
+asset: ""
+httpListener:
+  path: ""
+  host: ""
+  privatePort: ""
+
+#Opentelemetry configs
+opentelemetry:
+  service:
+    name: ""
+
+#ENSEK PROPERTIES
+api:
+  response:
+    timeout: ""
+    
+persistant:
+  response:
+    timeout: ""
+
+#Specific category for logging payload
+logging:
+  custom:
+    category: ""
+    
+# Region SupplierArea Mapping
+region:
+  supplierArea:
+    "10":
+    "11":
+    "12": 
+    "13": 
+    "14": 
+    "15": 
+    "16": 
+    "17": 
+    "18": 
+    "19": 
+    "20": 
+    "21": 
+    "22": 
+    "23": 

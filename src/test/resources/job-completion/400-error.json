@@ -1,0 +1,11 @@
+{
+  "fault": {
+    "transId": "95959c60-c484-11ec-8203-06718d0478a0",
+    "error": [
+      {
+        "code": "TE01",
+        "message": "/mpan expected type: String, found: Null"
+      }
+    ]
+  }
+}

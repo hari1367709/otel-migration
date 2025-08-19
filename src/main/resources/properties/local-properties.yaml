@@ -1,0 +1,51 @@
+#### Auto discovery id ####
+autodiscovery:
+  id: ""
+
+#opentelemetry
+opentelemetry:
+  host: ""
+  endpoint: ""
+
+#Ensek Properties
+ensek:
+  aws:
+    region: ""
+    servicename: ""
+    #Use properties - ensek.aws.secretkey and ensek.aws.accesskey in plan fashion(without secure::) when deploying the application in local machine(Best to pass as VM args). Secret key is encrypted with encrytion key. Please get the encryption key from Mule dev team for decryption if required.
+    secretkey: ""
+    accesskey: ""
+  endpoint:
+    host: ""
+    port: ""
+    uri: ""
+  metertechnicalendpointwithoutproxy:
+    uri: ""
+  metertechnicalendpointwithproxy:
+    uri: ""
+    queryString: ""
+  jobscompletionendpoint:
+    uri: ""
+  smartjobnotificationendpoint:
+    uri: ""
+  getconsent:
+    uri: ""
+  putconsent:
+    uri: ""
+  deleteconsent:
+    uri: ""
+  getrota:
+    uri: ""  
+  getregion:
+    uri: ""
+  getaddressesByPostcode:
+    uri: ""
+  getaddresses:
+    uri: ""
+  meterReadings:
+    uri: ""
+    queryString: ""
+  supplystatus:
+    uri: ""
+  smartreadstatus:
+    uri: ""

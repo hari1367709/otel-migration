@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd ">
+    <munit:config name="smart-job-notification-test.xml" />
+  <http:request-config name="HTTPS_Request_Configuration_notification">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+	<munit:test name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-202-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-202-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock smartjob notification API" doc:id="f4ef6f06-ec94-44b8-a99e-a34d150d0ac6" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://smart-job-notification/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('smart-job-notification/request.json')]" />
+			<http:request config-ref="HTTPS_Request_Configuration_notification" method="POST" path="/19112/metering-jobs/smartjob-notification">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(202)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 202" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-job-notification/response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-404-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock smartjob notification API" doc:id="f4ef6f06-ec94-44b8-a99e-a34d150d0ac6" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://smart-job-notification/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('smart-job-notification/request.json')]" />
+			<http:request config-ref="HTTPS_Request_Configuration_notification" method="POST" path="/19112/metering-jobs/smartjob-notification/notfound" correlationId="2166edb0-c23d-11ec-a190-000c2997d49a">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="404" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-job-notification/404-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+     <munit:test name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-405-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-405-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock smartjob notification API" doc:id="72febf80-560b-4955-8687-65711c3cc24c" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://smart-job-notification/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('smart-job-notification/request.json')]" />
+			<http:request config-ref="HTTPS_Request_Configuration_notification" method="GET" path="/19112/metering-jobs/smartjob-notification" correlationId="115af510-c23d-11ec-a190-000c2997d49a">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="405" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 405" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-job-notification/405-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+     <munit:test name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-415-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-415-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock smartjob notification API" doc:id="f2cc4f23-f111-49d5-91e8-869e73845c74" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://smart-job-notification/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('smart-job-notification/request.json')]" />
+			<http:request config-ref="HTTPS_Request_Configuration_notification" method="POST" path="/19112/metering-jobs/smartjob-notification" correlationId="4e9b5860-c464-11ec-8203-06718d0478a0">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/xml"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="415" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(415)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 415" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-job-notification/415-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+        <munit:test name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-406-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-406-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock smartjob notification API" doc:id="2c0fca8a-69e2-4bad-a312-f45992b78f19" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Call Ensek Jobs Completion API" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[%dw 2.0 output application/json --- readUrl('classpath://smart-job-notification/response-ensek.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('smart-job-notification/request.json')]" />
+			<http:request config-ref="HTTPS_Request_Configuration_notification" method="POST" path="/19112/metering-jobs/smartjob-notification" correlationId="aac26700-c469-11ec-8203-06718d0478a0">
+                <http:headers><![CDATA[#[{"Accept":"application/xml","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="406" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(406)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 406" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-job-notification/406-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+            <munit:test name="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-400-application\json-FlowTest" description="Verifying functionality of [post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="post:\(ensekAccountId)\metering-jobs\smartjob-notification:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <set-payload value="#[MunitTools::getResourceAsString('smart-job-notification/400-request.json')]" />
+			<http:request config-ref="HTTPS_Request_Configuration_notification" method="POST" path="/191xxx/metering-jobs/smartjob-notification" correlationId="aac26700-c469-11ec-8203-06718d0478a0">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json"}]]]></http:headers>
+				<http:response-validator >
+					<http:success-status-code-validator values="400" />
+				</http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <logger level="INFO" doc:name="Logger" doc:id="14b8ca2d-1c50-46a3-a237-4441516cf57b" message="smartjob-notification response : #[%dw 2.0 output application/json --- payload]"/>
+			<munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://smart-job-notification/400-error-response.json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+</mule>

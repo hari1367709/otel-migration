@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 1. Declare packages attribute at configuration element -->
+<Configuration level="DEBUG" packages="com.avioconsulting.mule.opentelemetry.logs.api,com.mulesoft.ch.logging.appender">    <!--These are some of the loggers you can enable. There are several more you can find in the documentation. Besides this log4j configuration, you can also use Java VM environment variables to enable other logs like network (-Djavax.net.debug=ssl or all) and Garbage Collector (-XX:+PrintGC). These will be append to the console, so you will see them in the mule_ee.log file. -->
+    <Appenders>
+        <MuleOpenTelemetry name="OpenTelemetryAppender" captureContextDataAttributes="*" captureExperimentalAttributes="true"/>
+    </Appenders>
+    <Loggers>        <!-- Http Logger shows wire traffic on DEBUG -->
+        <AsyncLogger name="org.mule.service.http.impl.service.HttpMessageLogger" level="INFO" />
+        <AsyncLogger name="org.mule.service.http" level="WARN" />
+        <AsyncLogger name="org.mule.extension.http" level="WARN" />
+        <AsyncLogger name="org.mule.runtime.module.extension.internal.loader.utils.JavaMetadataKeyIdModelParserUtils" level="ERROR" />
+        <AsyncLogger name="com.avioconsulting.mule.opentelemetry" level="INFO" />
+        <AsyncLogger name="io.opentelemetry" level="INFO" />
+        <AsyncRoot level="INFO">
+            <AppenderRef ref="OpenTelemetryAppender" />
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

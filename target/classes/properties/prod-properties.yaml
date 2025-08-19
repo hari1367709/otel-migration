@@ -1,0 +1,48 @@
+#### Auto discovery id ####
+autodiscovery:
+  id: ""
+
+#opentelemetry
+opentelemetry:
+  host: ""
+  endpoint: ""
+
+#Ensek Properties
+ensek:
+  aws:
+    region: ""
+    servicename: ""
+  endpoint:
+    host: ""
+    port: ""
+    uri: ""
+  metertechnicalendpointwithoutproxy:
+    uri: ""
+  metertechnicalendpointwithproxy:
+    uri: ""
+    queryString: ""
+  jobscompletionendpoint:
+    uri: ""
+  smartjobnotificationendpoint:
+    uri: ""
+  getconsent:
+    uri: ""
+  putconsent:
+    uri: ""
+  deleteconsent:
+    uri: ""
+  getrota:
+    uri: "" 
+  getregion:
+    uri: ""
+  getaddresses:
+    uri: ""
+  getaddressesByPostcode:
+    uri: ""
+  meterReadings:
+    uri: ""
+    queryString: ""
+  supplystatus:
+    uri: ""
+  smartreadstatus:
+    uri: "" 

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd 
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <munit:config name="bg-premise-ensek-sys-api-apikit-test.xml" />
+    <http:request-config name="HTTP_Request_Configuration-putConsent" basePath="/1000011">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+    <munit:test name="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-204--FlowTest" description="Verifying functionality of [put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-204-]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+			<munit-tools:mock-when doc:name="Mock Ensek Call" doc:id="a58eb9aa-6f12-4c34-9cd9-41198e03fa29" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a0af92ca-9011-44e0-b9cb-12547630a4aa" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[MunitTools::getResourceAsString('consent-put/success-204/attributes.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+		<munit:execution>
+            <set-payload value="#[output application/json --- readUrl('classpath://consent-put/success-204/request.json')]" doc:name="Set Payload" doc:id="cf0b523e-fedf-4bf2-81c8-b1f790402193" />
+			<http:request config-ref="HTTP_Request_Configuration-putConsent" method="PUT" path="/consent">
+                <http:headers><![CDATA[#[{"Content-Type":"application/json"}]]]></http:headers>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(204)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 204" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-400-application\json-FlowTest" description="Verifying functionality of [put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <set-payload value="#[output application/json --- readUrl('classpath://consent-put/400/request.json')]" doc:name="Set Payload" doc:id="aa58f50d-1015-45c3-a349-8cff7cd61e58" />
+			<http:request config-ref="HTTP_Request_Configuration-putConsent" method="PUT" path="/consent">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="400" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-put/400/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-404-application\json-FlowTest" description="Verifying functionality of [put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration-putConsent" method="PUT" path="/consent/nf">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="404" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-put/404/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-405-application\json-FlowTest" description="Verifying functionality of [put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-405-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration-putConsent" method="PATCH" path="/consent">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="405" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 405" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-put/405/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-415-application\json-FlowTest" description="Verifying functionality of [put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-415-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="put:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <set-payload value="#[output application/json --- readUrl('classpath://consent-put/success-204/request.json')]" doc:name="Set Payload" doc:id="33aceaec-012d-459d-9ce6-db6bd02fe5d2" />
+			<http:request config-ref="HTTP_Request_Configuration-putConsent" method="PUT" path="/consent">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/xml","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="415" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(415)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 415" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-put/415/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    
+    
+</mule>

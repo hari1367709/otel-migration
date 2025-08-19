@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd 
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <munit:config name="bg-premise-ensek-sys-api-apikit-test.xml" />
+    <http:request-config name="HTTP_Request_Configuration-DeleteConsent" basePath="/1000011">
+        <http:request-connection host="localhost" port="8091">
+		</http:request-connection>
+    </http:request-config>
+    <munit:test name="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-204--FlowTest" description="Verifying functionality of [delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-204-]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <munit-tools:mock-when doc:name="Mock when" doc:id="8b17464d-15f5-4c5e-b1a8-b2ff0bf1bbfe" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1baf6e92-77e4-4c12-aca6-04af10b39f85" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[MunitTools::getResourceAsString('consent-delete/success-204/attributes.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <set-payload value="#[output application/json --- readUrl('classpath://consent-delete/success-204/request.json')]" doc:name="Set Payload" doc:id="bf9c7d81-80c1-4940-94ba-e4feb9b7c8aa" />
+			<http:request config-ref="HTTP_Request_Configuration-DeleteConsent" method="DELETE" path="/consent" />
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(204)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 204" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-400-application\json-FlowTest" description="Verifying functionality of [delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <set-payload value="#[output application/json --- readUrl('classpath://consent-delete/400/request.json')]" doc:name="Set Payload" doc:id="cf1ec420-f099-411a-a6fa-ae1c5e5cae4d" />
+			<http:request config-ref="HTTP_Request_Configuration-DeleteConsent" method="DELETE" path="/consent">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="400" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-delete/400/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-405-application\json-FlowTest" description="Verifying functionality of [delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-405-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration-DeleteConsent" method="PATCH" path="/consent">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="405" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 405" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-delete/405/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-404-application\json-FlowTest" description="Verifying functionality of [delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration-DeleteConsent" method="DELETE" path="/consent/nf">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/json","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="404" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-delete/404/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+	<munit:test name="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-415-application\json-FlowTest" description="Verifying functionality of [delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config-415-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="bg-premise-ensek-sys-api-main" />
+            <munit:enable-flow-source value="delete:\(ensekAccountId)\consent:application\json:bg-premise-ensek-sys-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <set-payload value="#[output application/json --- readUrl('classpath://consent-delete/success-204/request.json')]" doc:name="Set Payload" doc:id="e9834bc1-e23c-4145-9190-2e34801f9191" />
+			<http:request config-ref="HTTP_Request_Configuration-DeleteConsent" method="DELETE" path="/consent">
+                <http:headers><![CDATA[#[{"Accept":"application/json","Content-Type":"application/xml","X-Correlation-Id": "X-Correlation-Id"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="415" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(415)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 415" />
+            <munit-tools:assert-that expression="#[output application/json --- payload]" is="#[MunitTools::equalTo(readUrl('classpath://consent-delete/415/response.json', 'application/json'))]" message="The response payload is not correct!" doc:name="Assert That - Payload is Expected" />
+        </munit:validation>
+    </munit:test>
+</mule>

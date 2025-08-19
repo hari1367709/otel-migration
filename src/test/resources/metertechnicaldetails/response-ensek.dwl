@@ -1,0 +1,592 @@
+%dw 2.0
+output application/json
+---
+[
+    {
+        "associationStartDate": "2021-08-31T00:00:00",
+        "associationEndDate": null,
+        "supplyStartDate": "2021-09-18T00:00:00",
+        "supplyEndDate": null,
+        "isSmart": false,
+        "isSmartCommunicating": false,
+        "externalReference": null,
+        "id": 29104,
+        "meterPointNumber": 2374252100512,
+        "meterPointNumberString": "2374252100512",
+        "meterPointType": "E",
+        "meters": [
+            {
+                "meterId": 21712,
+                "meterSerialNumber": "F00FX00512",
+                "installedDate": "2021-06-30T00:00:00",
+                "removedDate": null,
+                "registers": [
+                    {
+                        "id": 30152,
+                        "registerReference": "01",
+                        "tariffComponent": null,
+                        "attributes": [
+                            {
+                                "attributeName": "Measurement_Quantity_ID",
+                                "attributeValue": "AI",
+                                "attributeDescription": "Measurement  Quantity ID"
+                            },
+                            {
+                                "attributeName": "Multiplier",
+                                "attributeValue": "1",
+                                "attributeDescription": "Multiplier"
+                            },
+                            {
+                                "attributeName": "No_Of_Digits",
+                                "attributeValue": "5",
+                                "attributeDescription": "No  Of  Digits"
+                            },
+                            {
+                                "attributeName": "Type",
+                                "attributeValue": "C",
+                                "attributeDescription": "Type"
+                            }
+                        ],
+                        "tpr": "00043",
+                        "tprPeriodDescription": "DAY",
+                        "eacAq": 3122.0,
+                        "sourceIdType": "D0019"
+                    },
+                    {
+                        "id": 30153,
+                        "registerReference": "02",
+                        "tariffComponent": null,
+                        "attributes": [
+                            {
+                                "attributeName": "Measurement_Quantity_ID",
+                                "attributeValue": "AI",
+                                "attributeDescription": "Measurement  Quantity ID"
+                            },
+                            {
+                                "attributeName": "Multiplier",
+                                "attributeValue": "1",
+                                "attributeDescription": "Multiplier"
+                            },
+                            {
+                                "attributeName": "No_Of_Digits",
+                                "attributeValue": "5",
+                                "attributeDescription": "No  Of  Digits"
+                            },
+                            {
+                                "attributeName": "Type",
+                                "attributeValue": "C",
+                                "attributeDescription": "Type"
+                            }
+                        ],
+                        "tpr": "00210",
+                        "tprPeriodDescription": "NIGHT",
+                        "eacAq": 1427.0,
+                        "sourceIdType": "D0019"
+                    }
+                ],
+                "attributes": [
+                    {
+                        "attributeName": "Manufacturers_Make_Type",
+                        "attributeValue": "TEST",
+                        "attributeDescription": "Manufacturers  Make  Type"
+                    },
+                    {
+                        "attributeName": "METER_LOCATION",
+                        "attributeValue": "X",
+                        "attributeDescription": "Meter Location"
+                    },
+                    {
+                        "attributeName": "MeterType",
+                        "attributeValue": "N",
+                        "attributeDescription": "Meter Type"
+                    }
+                ]
+            }
+        ],
+        "attributes": [
+            {
+                "attributeName": "DA",
+                "attributeValue": "EMEB",
+                "effectiveFromDate": "2021-09-18T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "DA"
+            },
+            {
+                "attributeName": "DC",
+                "attributeValue": "EMEB",
+                "effectiveFromDate": "2021-09-18T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "DC"
+            },
+            {
+                "attributeName": "Distributor",
+                "attributeValue": "YELG",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Distributor"
+            },
+            {
+                "attributeName": "EnergisationStatus",
+                "attributeValue": "E",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Energisation Status"
+            },
+            {
+                "attributeName": "Green Deal",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Green  Deal"
+            },
+            {
+                "attributeName": "greenDealActive",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "green Deal Active"
+            },
+            {
+                "attributeName": "GSP",
+                "attributeValue": "_M",
+                "effectiveFromDate": "1997-10-01T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "GSP"
+            },
+            {
+                "attributeName": "isCOT",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "is COT"
+            },
+            {
+                "attributeName": "isPrepay",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "is Prepay"
+            },
+            {
+                "attributeName": "LLF Indicator",
+                "attributeValue": "A",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "LLF  Indicator"
+            },
+            {
+                "attributeName": "LLFC",
+                "attributeValue": "100",
+                "effectiveFromDate": "1997-10-01T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "LLFC"
+            },
+            {
+                "attributeName": "Measurement Class",
+                "attributeValue": "A",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Measurement  Class"
+            },
+            {
+                "attributeName": "Metering Type",
+                "attributeValue": "NHH",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Metering  Type"
+            },
+            {
+                "attributeName": "MeterMakeAndModel",
+                "attributeValue": "TEST",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Meter Make And Model"
+            },
+            {
+                "attributeName": "MeterType",
+                "attributeValue": "S1",
+                "effectiveFromDate": "2018-05-28T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Meter Type"
+            },
+            {
+                "attributeName": "MOP",
+                "attributeValue": "EMEB",
+                "effectiveFromDate": "2021-09-18T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "MOP"
+            },
+            {
+                "attributeName": "MTC",
+                "attributeValue": "801",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "MTC"
+            },
+            {
+                "attributeName": "MTC Related",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "MTC  Related"
+            },
+            {
+                "attributeName": "No_Of_Digits",
+                "attributeValue": "5",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "No  Of  Digits"
+            },
+            {
+                "attributeName": "OLD_SUPPLIER",
+                "attributeValue": "SOUT",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Old Supplier"
+            },
+            {
+                "attributeName": "OLD_SUPPLIER_DA",
+                "attributeValue": "SOUT",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Old Supplier Da"
+            },
+            {
+                "attributeName": "OLD_SUPPLIER_DC",
+                "attributeValue": "SOUT",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Old Supplier Dc"
+            },
+            {
+                "attributeName": "OLD_SUPPLIER_MOP",
+                "attributeValue": "SOUT",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Old Supplier Mop"
+            },
+            {
+                "attributeName": "Payment_Type",
+                "attributeValue": "Credit",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Payment  Type"
+            },
+            {
+                "attributeName": "Profile Class",
+                "attributeValue": "01",
+                "effectiveFromDate": "2012-05-30T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "Profile  Class"
+            },
+            {
+                "attributeName": "Registration_Transaction_Number",
+                "attributeValue": "1",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Registration  Transaction  Number"
+            },
+            {
+                "attributeName": "SSC",
+                "attributeValue": "0151",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "SSC"
+            },
+            {
+                "attributeName": "SUPPLIER",
+                "attributeValue": "TILL",
+                "effectiveFromDate": "2021-09-18T00:00:00",
+                "effectiveToDate": null,
+                "attributeDescription": "SUPPLIER"
+            },
+            {
+                "attributeName": "Supply_Status",
+                "attributeValue": "LIVE",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Supply  Status"
+            }
+        ]
+    },
+    {
+        "associationStartDate": "2021-08-31T00:00:00",
+        "associationEndDate": null,
+        "supplyStartDate": "2021-09-18T00:00:00",
+        "supplyEndDate": null,
+        "isSmart": false,
+        "isSmartCommunicating": false,
+        "externalReference": null,
+        "id": 29105,
+        "meterPointNumber": 2228979205,
+        "meterPointNumberString": "2228979205",
+        "meterPointType": "G",
+        "meters": [
+            {
+                "meterId": 21711,
+                "meterSerialNumber": "SIM2228979205",
+                "installedDate": "2016-08-31T00:00:00",
+                "removedDate": null,
+                "registers": [
+                    {
+                        "id": 30151,
+                        "registerReference": "G",
+                        "tariffComponent": null,
+                        "attributes": [
+                            {
+                                "attributeName": "Multiplier",
+                                "attributeValue": "1.002",
+                                "attributeDescription": "Multiplier"
+                            },
+                            {
+                                "attributeName": "No_Of_Digits",
+                                "attributeValue": "7",
+                                "attributeDescription": "No  Of  Digits"
+                            },
+                            {
+                                "attributeName": "Units_Of_Measure",
+                                "attributeValue": "SCFH",
+                                "attributeDescription": "Units  Of  Measure"
+                            }
+                        ],
+                        "tpr": null,
+                        "tprPeriodDescription": "GAS",
+                        "eacAq": 5475.0,
+                        "sourceIdType": "TRF.S15"
+                    }
+                ],
+                "attributes": [
+                    {
+                        "attributeName": "Amr_Indicator",
+                        "attributeValue": "N",
+                        "attributeDescription": "Amr  Indicator"
+                    },
+                    {
+                        "attributeName": "Bypass_Fitted_Indicator",
+                        "attributeValue": "U",
+                        "attributeDescription": "Bypass  Fitted  Indicator"
+                    },
+                    {
+                        "attributeName": "Collar_Fitted_Indicator",
+                        "attributeValue": "U",
+                        "attributeDescription": "Collar  Fitted  Indicator"
+                    },
+                    {
+                        "attributeName": "Imperial_Indicator",
+                        "attributeValue": "N",
+                        "attributeDescription": "Imperial  Indicator"
+                    },
+                    {
+                        "attributeName": "Inspection_Date",
+                        "attributeValue": "8/31/2020 12:00:00 AM",
+                        "attributeDescription": "Inspection  Date"
+                    },
+                    {
+                        "attributeName": "Manufacture_Code",
+                        "attributeValue": "INV",
+                        "attributeDescription": "Manufacture  Code"
+                    },
+                    {
+                        "attributeName": "Meter_Link_Code",
+                        "attributeValue": "S",
+                        "attributeDescription": "Meter  Link  Code"
+                    },
+                    {
+                        "attributeName": "METER_LOCATION",
+                        "attributeValue": "13",
+                        "attributeDescription": "Meter Location"
+                    },
+                    {
+                        "attributeName": "Meter_Mechanism_Code",
+                        "attributeValue": "CR",
+                        "attributeDescription": "Meter  Mechanism  Code"
+                    },
+                    {
+                        "attributeName": "Meter_Status",
+                        "attributeValue": "LI",
+                        "attributeDescription": "Meter  Status"
+                    },
+                    {
+                        "attributeName": "MeterType",
+                        "attributeValue": "S",
+                        "attributeDescription": "Meter Type"
+                    },
+                    {
+                        "attributeName": "Model_Code",
+                        "attributeValue": "U6",
+                        "attributeDescription": "Model  Code"
+                    },
+                    {
+                        "attributeName": "Payment_Type",
+                        "attributeValue": "Credit",
+                        "attributeDescription": "Payment  Type"
+                    }
+                ]
+            }
+        ],
+        "attributes": [
+            {
+                "attributeName": "CLIENT_UNIQUE_REFERENCE",
+                "attributeValue": "22289792",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Client Unique Reference"
+            },
+            {
+                "attributeName": "Confirmation_Reference",
+                "attributeValue": "22289792",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Confirmation  Reference"
+            },
+            {
+                "attributeName": "Gas_Act_Owner",
+                "attributeValue": "S",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  Act  Owner"
+            },
+            {
+                "attributeName": "Gas_Imperial_Meter_Indicator",
+                "attributeValue": "N",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  Imperial  Meter  Indicator"
+            },
+            {
+                "attributeName": "Gas_Meter_Location_Code",
+                "attributeValue": "13",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  Meter  Location  Code"
+            },
+            {
+                "attributeName": "Gas_Meter_Mechanism",
+                "attributeValue": "CR",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  Meter  Mechanism"
+            },
+            {
+                "attributeName": "Gas_Meter_Model",
+                "attributeValue": "U6",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  Meter  Model"
+            },
+            {
+                "attributeName": "Gas_Meter_Status",
+                "attributeValue": "LI",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  Meter  Status"
+            },
+            {
+                "attributeName": "Gas_No_Of_Digits",
+                "attributeValue": "7",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Gas  No  Of  Digits"
+            },
+            {
+                "attributeName": "IGT Indicator",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "IGT  Indicator"
+            },
+            {
+                "attributeName": "isCOT",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "is COT"
+            },
+            {
+                "attributeName": "isPrepay",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "is Prepay"
+            },
+            {
+                "attributeName": "Large Site Indicator",
+                "attributeValue": "False",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Large  Site  Indicator"
+            },
+            {
+                "attributeName": "LDZ",
+                "attributeValue": "DN",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "LDZ"
+            },
+            {
+                "attributeName": "Meter Designation",
+                "attributeValue": null,
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Meter  Designation"
+            },
+            {
+                "attributeName": "Meter Status",
+                "attributeValue": null,
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Meter  Status"
+            },
+            {
+                "attributeName": "Meter_Round_The_Clock_Count",
+                "attributeValue": "0",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Meter  Round  The  Clock  Count"
+            },
+            {
+                "attributeName": "NOMINATION_SHIPPER_REF",
+                "attributeValue": "BGF-29105",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Nomination Shipper Ref"
+            },
+            {
+                "attributeName": "OLD_SUPPLIER",
+                "attributeValue": null,
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Old Supplier"
+            },
+            {
+                "attributeName": "OLD_SUPPLIER_MAM",
+                "attributeValue": "ACV",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Old Supplier Mam"
+            },
+            {
+                "attributeName": "SUPPLY_POINT_CATEGORY",
+                "attributeValue": "NDMA",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Supply Point Category"
+            },
+            {
+                "attributeName": "Supply_Status",
+                "attributeValue": "LIVE",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Supply  Status"
+            },
+            {
+                "attributeName": "Transporter",
+                "attributeValue": "National Grid Gas",
+                "effectiveFromDate": null,
+                "effectiveToDate": null,
+                "attributeDescription": "Transporter"
+            }
+        ]
+    }
+]
+

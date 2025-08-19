@@ -1,0 +1,10 @@
+[
+    {
+        "typeCode": "PK",
+        "itemCode": "KP"
+    },
+    {
+        "typeCode": "GasMeterReadFrequency",
+        "itemCode": "HalfHourly"
+    }
+]
