@@ -24,56 +24,14 @@
 		<finalName>${project.artifactId}-${app.version}</finalName>
 		<plugins>
 			<plugin>
-				<groupId>com.mulesoft.munit.tools</groupId>
-				<artifactId>munit-maven-plugin</artifactId>
-				<configuration>
-					<coverage>
-						<ignoreFlows>
-							<ignoreFlow>global-error-handler</ignoreFlow>
-						</ignoreFlows>
-					</coverage>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mule.tools.maven</groupId>
-				<artifactId>mule-maven-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<cloudHubDeployment>
-						<uri>https://anypoint.mulesoft.com</uri>
-						<muleVersion>${app.runtime}</muleVersion>
-						<connectedAppClientId>${anypoint.username}</connectedAppClientId>
-						<connectedAppClientSecret>${anypoint.password}</connectedAppClientSecret>
-						<connectedAppGrantType>client_credentials</connectedAppGrantType>
-						<applicationName>${app_name}</applicationName>
-						<environment>${env_platform}</environment>
-						<businessGroupId>${b2c.groupId}</businessGroupId>
-						<workerType>${worker_type}</workerType>
-						<region>eu-west-2</region>
-						<workers>${workers}</workers>
-						<objectStoreV2>true</objectStoreV2>
-						<disableCloudHubLogs>true</disableCloudHubLogs>
-						<!--Setting skipDeploymentVerification as true to not waste pipeline resources. Developer/whoever does release to production needs to ensure the app is up by checking status either by calling platform apis/runtime manager -->
-						<skipDeploymentVerification>true</skipDeploymentVerification>
-						<!-- Start: Non-Encrypted properties -->
-						<properties>
-							<encryptionKey>${encryption_key}</encryptionKey>
-							<env>${env_property_file}</env>
-							<anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
-							<anypoint.platform.client_id>${platform_clientid}</anypoint.platform.client_id>
-							<anypoint.platform.client_secret>${platform_clientsecret}</anypoint.platform.client_secret>
-							<ensek.aws.accesskey>${ensek_accesskey}</ensek.aws.accesskey>
-							<ensek.aws.secretkey>${ensek_secretkey}</ensek.aws.secretkey>
-							<!-- OTEL configs -->
-							<opentelemetry.endpointToken>${opentelemetry_endpointToken}</opentelemetry.endpointToken>
-							<opentelemetry.metrics.anypoint.clientId>${opentelemetry_metrics_anypoint_clientId}</opentelemetry.metrics.anypoint.clientId>
-							<opentelemetry.metrics.anypoint.clientSecret>${opentelemetry_metrics_anypoint_clientSecret}</opentelemetry.metrics.anypoint.clientSecret>
-						</properties>
-						<!-- End: Non-Encrypted properties -->
-					</cloudHubDeployment>
-					<classifier>mule-application</classifier>
-				</configuration>
-			</plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>3.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
