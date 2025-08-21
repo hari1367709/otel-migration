@@ -5,6 +5,7 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
     <!-- HTTPS Listener Configuration -->
     <http:listener-config name="bg-premise-ensek-sys-api-httpListenerConfig">
         <http:listener-connection host="${httpListener.host}" port="${httpListener.privatePort}"/>
+        <flow-ref name="tracing-add-mdc-trace-context-sub-flow" />
     </http:listener-config>
 
      <!-- APIKit Configuration -->
