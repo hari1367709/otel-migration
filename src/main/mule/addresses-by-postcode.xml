@@ -5,6 +5,8 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <import doc:name="Import" file="otel-common-flows.xml" />
+    <import doc:name="Import" file="otel-global-config.xml" />
 	<sub-flow name="addresses-by-postcode-get-sub-flow" doc:id="806da0aa-856e-437c-8659-8105f7fab65b" >
 		<ee:transform doc:name="Prepare Addresses GET Ensek API Request" doc:id="b69b6f17-8f5a-4c90-9bf8-a5e4c115fb14" >
 			<ee:message />
