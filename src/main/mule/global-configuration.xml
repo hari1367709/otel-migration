@@ -5,6 +5,7 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
     <!-- HTTPS Listener Configuration -->
     <http:listener-config name="bg-premise-ensek-sys-api-httpListenerConfig">
         <http:listener-connection host="${httpListener.host}" port="${httpListener.privatePort}"/>
+        <flow-ref name="tracing-add-mdc-trace-context-sub-flow" />
     </http:listener-config>
 
      <!-- APIKit Configuration -->
@@ -20,7 +21,25 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 
     <!--  Ensek HTTP Request Configuration  -->
     <http:request-config name="HTTPRequestConfig-Ensek" doc:name="HTTP Request configuration" doc:id="47588599-118f-46f8-81c8-fda4a4a00b45" responseTimeout="${api.response.timeout}">
+                <http:headers>
+                    <![CDATA[
+                        #[output application/java---
+                        {
+                            "traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+                            "tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+                        }
+                    ]]>
+                </http:headers>
         <http:request-connection protocol="HTTPS" host="${ensek.endpoint.host}" port="${ensek.endpoint.port}" connectionIdleTimeout="${persistant.response.timeout}" />
+                <http:headers>
+                    <![CDATA[
+                        #[output application/java---
+                        {
+                            "traceparent": vars.OTEL_TRACE_CONTEXT.traceparent as String default '',
+                            "tracestate": vars.OTEL_TRACE_CONTEXT.tracestate as String default ''
+                        }
+                    ]]>
+                </http:headers>
     </http:request-config>
     
     <!-- Common Lib XMLs Import Config -->
